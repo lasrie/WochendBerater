@@ -1,0 +1,30 @@
+{
+  "name": "wochenendberater",
+  "version": "1.0.0",
+  "description": "Alexa Skill for reflect weekend guide",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lasrie/WochendBerater.git"
+  },
+  "keywords": [
+    "alexa",
+    "wochenendberater",
+    "skill",
+    "reflect"
+  ],
+  "author": "Lasse Riess",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lasrie/WochendBerater/issues"
+  },
+  "homepage": "https://github.com/lasrie/WochendBerater#readme",
+  "dependencies": {
+    "alexa-sdk": "^1.0.6",
+    "html-metadata": "git://github.com/wikimedia/html-metadata.git",
+    "moment": "^2.17.1"
+  }
+}
