@@ -11,7 +11,7 @@ const Alexa = require('alexa-sdk');
 const moment = require('moment');
 var scrape = require('html-metadata');
 
-const APP_ID = undefined; // TODO replace with your app ID (OPTIONAL).
+const APP_ID = 'amzn1.ask.skill.60239a25-4cc8-4623-b4a4-4a330b158a0c';
 
 const languageStrings = {
 
@@ -32,30 +32,36 @@ const handlers = {
     , 'WochenendBeraterIntent': function (intent, session, response) {
         this.emit('GetEvents', intent, session, response);
     }
+    , 'Unhandled': function (intent, session, response) {
+        this.emit('GetEvents', intent, session, response);
+    }
     , 'GetEvents': function (intent, session, response) {
         //Find out which week we are talking about
-        var dateSlot = intent.slots.Date;
         var date = moment();
-        if (!dateSlot || !dateSlot.value) {
-            //Error: no date set in intent: automatically falling back to current week
-        } else {
-            date = moment(dateSlot.value);
-            //Use week from intent
+        if(intent){
+            var dateSlot = intent.slots.Date;
+            if (!dateSlot || !dateSlot.value) {
+                //Error: no date set in intent: automatically falling back to current week
+            } else {
+                date = moment(dateSlot.value);
+                //Use week from intent
+            }
         }
-        var week = date.isoWeek();
-        var year = date.year().substring(2);
-        
-        
+       
         //Get Web Page Meta Data (OpenGraph) from reflect
 
-        var url = 'http://www.reflect.de/wochenendberater-kw' + week + year + '/';
-        scrape(url, function (error, metadata) {
+        var url = 'http://www.reflect.de/wochenendberater-kw' + date.format("WW") + date.format("YY") + '/';
+        var self = this;
+        scrape(url).then(function (metadata) {
             var description = metadata.openGraph.description;
             var title = metadata.openGraph.title;
             var speechOutput = title + description;
             //Output with card, Card will be shown in Alexa App
-            this.emit(':tellWithCard', speechOutput, title, description);
-        });
+            self.emit(':tellWithCard', speechOutput, title, description);
+        }, function(error){
+            console.log(url);
+        }
+                        );
     }
     , 'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
@@ -75,7 +81,7 @@ const handlers = {
 
 exports.handler = (event, context) => {
     const alexa = Alexa.handler(event, context);
-    alexa.APP_ID = APP_ID;
+    alexa.APP_ID = 'amzn1.ask.skill.60239a25-4cc8-4623-b4a4-4a330b158a0c';
     // To enable string internationalization (i18n) features, set a resources object.
     alexa.resources = languageStrings;
     alexa.registerHandlers(handlers);
